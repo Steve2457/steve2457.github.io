@@ -8,11 +8,11 @@ profile:
   image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
 
-selected_papers: false # includes a list of papers marked as "selected={true}"
+selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 
 announcements:
-  enabled: false # includes a list of news items
+  enabled: true # includes a list of news items
   scrollable: true # adds a vertical scroll bar if there are more than 3 news items
   limit: 5 # leave blank to include all the news in the `_news` folder
 
@@ -22,7 +22,7 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Hi 👋 I am a third-year undergraduate at the School of Information Science and Engineering ([Chongxin College](https://baike.baidu.com/item/%E5%B1%B1%E4%B8%9C%E5%A4%A7%E5%AD%A6%E5%B4%87%E6%96%B0%E5%AD%A6%E5%A0%82/20809738)), [Shandong University](https://www.sdu.edu.cn/). I am fortunate to be advised by [Prof. Yinwei Wei](https://faculty.sdu.edu.cn/weiyinwei1/zh_CN/index.htm). I have a solid foundation in mathematics, excel at learning new concepts, and am self-motivated with strong execution skills.
+Hi 👋 I am a third-year undergraduate at [Chongxin College](https://baike.baidu.com/item/%E5%B1%B1%E4%B8%9C%E5%A4%A7%E5%AD%A6%E5%B4%87%E6%96%B0%E5%AD%A6%E5%A0%82/20809738), [Shandong University](https://www.sdu.edu.cn/). I am fortunate to be advised by [Prof. Yinwei Wei](https://faculty.sdu.edu.cn/weiyinwei1/zh_CN/index.htm). I am also honored to work with [Prof. Song Guo](https://cse.hkust.edu.hk/~songguo/) at the [PEI Lab](https://www.hkpeilab.com/), [Hong Kong University of Science and Technology](https://hkust.edu.hk/), and engage in in-depth collaboration with [Jian Liu](https://hitcslj.github.io/) and [Jinxiang Lai](https://scholar.google.com/citations?user=6jAXwlwAAAAJ&hl=en).
 
 My research interests lie in developing more capable and general AI agents. Here are some core problems I’m thinking about:
 - How can generative world models provide agents with a deeper understanding of causality and dynamics?
@@ -33,8 +33,11 @@ I am passionate about advancing AI towards greater generality and real-world app
 
 If you have any questions, please feel free to contact me!
 
-## News
-Coming soon...
+## Something Interesting
+I've developed two browser extensions to boost academic productivity, both available on the Chrome Web Store:
+
+- <img src="assets/img/interesting/arxiv.png" style="width:24px; vertical-align:middle;"> **[Super ArXiv](https://github.com/Steve2457/Super-arXiv):** If you also read papers on ArXiv, you should definitely try this plugin — it comprehensively enhances the ArXiv browsing experience. <a href="https://github.com/Steve2457/Super-arXiv"><i class="fa-brands fa-github gh-icon" style="color: #000;"></i></a>
+- <img src="assets/img/interesting/openreveiw.png" style="width:24px; vertical-align:middle;"> **[OpenReview Export](https://github.com/Steve2457/Openreview-Export):** One-click export of OpenReview rebuttals to Markdown files, streamlining your LLM workflow. <a href="https://github.com/Steve2457/Openreview-Export"><i class="fa-brands fa-github gh-icon" style="color: #000;"></i></a>
 
 ## Misc.
 In my free time, I enjoy playing soccer and photography. Recently, I've also started getting into fitness 🏋️.
