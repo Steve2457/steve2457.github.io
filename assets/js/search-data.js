@@ -11,7 +11,7 @@ ninja.data = [{
     },
   },{id: "nav-publications",
           title: "Publications",
-          description: "Coming soon...",
+          description: "",
           section: "Navigation",
           handler: () => {
             window.location.href = "/publications/";
@@ -384,16 +384,11 @@ ninja.data = [{
           description: "",
           section: "Books",handler: () => {
               window.location.href = "/books/the_godfather/";
-            },},{id: "news-a-simple-inline-announcement",
-          title: 'A simple inline announcement.',
+            },},{id: "news-happy-birthday-context-agent-was-accepted-to-acl-2026-findings",
+          title: '🎉 Happy birthday! Context-Agent was accepted to ACL 2026 Findings.',
           description: "",
-          section: "News",},{id: "news-a-long-announcement-with-details",
-          title: 'A long announcement with details',
-          description: "",
-          section: "News",handler: () => {
-              window.location.href = "/news/announcement_2/";
-            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
-          title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
+          section: "News",},{id: "news-our-survey-gui-agents-with-reinforcement-learning-toward-digital-inhabitants-is-now-available-on-arxiv",
+          title: '📄 Our survey “GUI Agents with Reinforcement Learning: Toward Digital Inhabitants” is now...',
           description: "",
           section: "News",},{id: "projects-project-1",
           title: 'project 1',
