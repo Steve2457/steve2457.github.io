@@ -36,7 +36,7 @@ If you have any questions, please feel free to contact me!
 ## Something Interesting
 I've developed two browser extensions to boost academic productivity, both available on the Chrome Web Store:
 
-- <img src="assets/img/interesting/arxiv.png" style="width:24px; vertical-align:middle;"> **[Super ArXiv](https://github.com/Steve2457/Super-arXiv):** If you also read papers on ArXiv, you should definitely try this plugin — it comprehensively enhances the ArXiv browsing experience. <a href="https://github.com/Steve2457/Super-arXiv"><i class="fa-brands fa-github gh-icon" style="color: #000;"></i></a>
+- <img src="assets/img/interesting/arxiv.png" style="width:24px; vertical-align:middle;"> **[Super arXiv](https://github.com/Steve2457/Super-arXiv):** If you also read papers on ArXiv, you should definitely try this extension — it comprehensively enhances the ArXiv browsing experience. <a href="https://github.com/Steve2457/Super-arXiv"><i class="fa-brands fa-github gh-icon" style="color: #000;"></i></a>
 - <img src="assets/img/interesting/openreveiw.png" style="width:24px; vertical-align:middle;"> **[OpenReview Export](https://github.com/Steve2457/Openreview-Export):** One-click export of OpenReview rebuttals to Markdown files, streamlining your LLM workflow. <a href="https://github.com/Steve2457/Openreview-Export"><i class="fa-brands fa-github gh-icon" style="color: #000;"></i></a>
 
 ## Misc.
