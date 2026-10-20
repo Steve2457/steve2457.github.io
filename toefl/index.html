@@ -1049,6 +1049,60 @@
           grid-template-columns: repeat(4, 1fr);
         }
       }
+      .cloud-entry {
+        font-size: 12px;
+        padding: 5px 9px;
+      }
+      .cloud-panel {
+        max-width: 620px;
+        margin: 0 0 26px;
+        padding: 22px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .cloud-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .cloud-panel p {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 10px 0;
+      }
+      .cloud-panel form {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .cloud-panel input {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 9px 12px;
+      }
+      .cloud-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .cloud-message {
+        min-height: 22px;
+        overflow-wrap: anywhere;
+      }
+      .cloud-note {
+        font-size: 12px !important;
+      }
+      .topbar .status {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .cloud-panel label {
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
@@ -1095,9 +1149,52 @@
       <main class="main">
         <div class="topbar">
           <span>TOEFL / 单词补全专项</span>
-          <div class="status"><span class="dot"></span><span id="saveStatus">本地自动保存</span></div>
+          <div class="status">
+            <span class="dot"></span><span id="saveStatus">本地自动保存</span
+            ><button id="cloudToggle" class="cloud-entry" type="button" aria-expanded="false" aria-controls="cloudPanel">云同步</button>
+          </div>
         </div>
         <div class="content">
+          <section id="cloudPanel" class="cloud-panel" aria-label="云同步" hidden>
+            <div class="cloud-heading">
+              <h2>跨设备同步</h2>
+              <button id="cloudClose" class="quiet small" type="button" aria-label="关闭云同步面板">关闭</button>
+            </div>
+            <p>手机和电脑使用同一个邮箱登录，自动同步已练单词、答题统计和重点记忆状态。</p>
+            <p id="cloudMessage" class="cloud-message" role="status" aria-live="polite"></p>
+            <div id="cloudLogin">
+              <form id="cloudEmailForm">
+                <label for="cloudEmail">登录邮箱</label
+                ><input id="cloudEmail" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="254" /><button
+                  id="cloudSend"
+                  class="primary"
+                  type="submit"
+                >
+                  发送登录邮件
+                </button>
+              </form>
+              <form id="cloudCodeForm" hidden>
+                <label for="cloudCode">邮件中的验证码</label
+                ><input
+                  id="cloudCode"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="one-time-code"
+                  pattern="[0-9]{6,10}"
+                  minlength="6"
+                  maxlength="10"
+                  required
+                /><button id="cloudVerify" class="primary" type="submit">登录并同步</button>
+              </form>
+            </div>
+            <div id="cloudAccount" hidden>
+              <p id="cloudEmailLabel"></p>
+              <div class="cloud-actions">
+                <button id="cloudNow" class="primary" type="button">立即同步</button><button id="cloudLogout" type="button">退出登录</button>
+              </div>
+            </div>
+            <p class="cloud-note">断网时保存在本机，联网后自动补传。当前练习轮次分别保存在各设备；累计进度与错词共同更新。</p>
+          </section>
           <div id="storageWarning" class="storage-warning" role="status" hidden>浏览器未能保存进度。可继续练习，请在关闭页面前导出学习备份。</div>
           <section id="homeView">
             <div class="intro">
@@ -1230,7 +1327,7 @@
               ><input id="restoreInput" type="file" accept="application/json,.json" hidden />
             </div>
           </section>
-          <footer><span>WORDWISE · 语境中的词汇练习</span><span>离线可用 · 学习记录保存在当前浏览器</span></footer>
+          <footer><span>WORDWISE · 语境中的词汇练习</span><span>本地自动保存 · 登录后可跨设备同步</span></footer>
         </div>
       </main>
     </div>
@@ -14054,6 +14151,9 @@
         }
       ]
     </script>
+    <script id="cloudConfig" type="application/json">
+      { "url": "https://zmjmhgzadctoqwtjqxcy.supabase.co", "publishableKey": "sb_publishable_NFIO-SPFTiQx3H_cr1arIg_jErdzi4H", "magicLinkOnly": true }
+    </script>
     <script>
       "use strict";
       const DATA = JSON.parse(document.getElementById("questionData").textContent);
@@ -14067,7 +14167,13 @@
         String(value ?? "")
           .toLowerCase()
           .replace(/[^a-z]/g, "");
-      let state = { version: DATA_VERSION, stats: {}, round: null, settings: { pool: "all", count: "20", order: "random" } },
+      let state = {
+          version: DATA_VERSION,
+          stats: {},
+          round: null,
+          settings: { pool: "all", count: "20", order: "random" },
+          sync: { baseline: {}, pending: [], accountId: null },
+        },
         view = "home",
         toastTimer;
       function validState(raw) {
@@ -14128,6 +14234,7 @@
             label: String(r.label ?? "单词练习").slice(0, 80),
           };
         }
+        clean.sync = validateSyncState(raw.sync, clean.stats);
         return clean;
       }
       function save() {
@@ -14403,6 +14510,7 @@
         s.lastAnswer = skipped ? "（查看答案）" : typed;
         s.lastAt = new Date().toISOString();
         state.stats[q.id] = s;
+        recordCloudEvent(q.id, status, s.lastAnswer);
         save();
         refreshStats();
         renderQuiz();
@@ -14504,6 +14612,7 @@
         if (!button) return;
         const s = state.stats[button.dataset.master];
         s.mastered = !s.mastered;
+        recordCloudEvent(button.dataset.master, "mastery", "", s.mastered);
         save();
         refreshStats();
         if (view === "memory") renderMemory();
@@ -14581,6 +14690,7 @@
       $("retryAllButton").onclick = () => startRound(allWrong(true), "重点记忆重练");
       $("exportMemory").onclick = () => exportCSV(allWrong(), "历史错词");
       $("backupButton").onclick = () => {
+        collectCloudOutbox();
         download(`托福_学习备份_${dateLabel()}.json`, JSON.stringify(state, null, 2), "application/json;charset=utf-8");
         notify("学习备份已导出。");
       };
@@ -14591,10 +14701,13 @@
         try {
           if (file.size > 5000000) throw new Error("备份文件过大");
           const imported = validState(JSON.parse(await file.text()));
-          if (!confirm("导入将替换当前浏览器的学习记录和本轮进度。建议先导出当前备份。确定导入吗？")) return;
+          if (cloud.session && imported.sync.accountId && imported.sync.accountId !== cloud.session.user.id)
+            throw new Error("备份关联的是另一个登录账号");
+          if (!confirm("导入会替换本机练习记录；已登录时，累计进度会与云端合并。建议先导出当前备份。确定导入吗？")) return;
           state = imported;
           save();
           show("memory");
+          scheduleCloudSync();
           notify("已恢复学习记录和练习进度。");
         } catch (error) {
           notify("导入失败：" + error.message);
@@ -14602,6 +14715,408 @@
           e.target.value = "";
         }
       });
+      // Embedded by build.py. Public configuration only; auth tokens never enter backups.
+      function cleanCloudStats(raw) {
+        const result = {};
+        if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("云同步统计格式无效");
+        for (const [word, s] of Object.entries(raw)) {
+          if (!Object.hasOwn(BANK, word)) continue;
+          if (!s || ![s.correct, s.errors].every((n) => Number.isSafeInteger(n) && n >= 0)) throw new Error("云同步统计数字无效");
+          if (!Number.isSafeInteger(s.correct + s.errors)) throw new Error("云同步统计数字过大");
+          result[word] = {
+            attempts: s.correct + s.errors,
+            correct: s.correct,
+            errors: s.errors,
+            mastered: !!s.mastered,
+            masteryAt: Number.isFinite(Date.parse(s.masteryAt))
+              ? new Date(s.masteryAt).toISOString()
+              : Number.isFinite(Date.parse(s.lastAt))
+                ? new Date(s.lastAt).toISOString()
+                : "1970-01-01T00:00:00.000Z",
+            lastAnswer: String(s.lastAnswer ?? "").slice(0, 80),
+            lastAt: Number.isFinite(Date.parse(s.lastAt)) ? new Date(s.lastAt).toISOString() : "1970-01-01T00:00:00.000Z",
+          };
+        }
+        return result;
+      }
+      function validateSyncState(raw, stats) {
+        if (!raw) return { baseline: cleanCloudStats(stats), pending: [], accountId: null };
+        if (!Array.isArray(raw.pending) || raw.pending.length > 20000) throw new Error("待同步记录格式无效或数量过多");
+        const pending = [],
+          seen = new Set();
+        for (const e of raw.pending) {
+          if (
+            !e ||
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(e.id) ||
+            !Object.hasOwn(BANK, e.word) ||
+            !["correct", "wrong", "skipped", "mastery"].includes(e.kind) ||
+            !Number.isFinite(Date.parse(e.at)) ||
+            (e.kind === "mastery" && typeof e.mastered !== "boolean")
+          )
+            throw new Error("待同步事件无效");
+          if (seen.has(e.id)) continue;
+          seen.add(e.id);
+          pending.push({
+            id: e.id,
+            word: e.word,
+            kind: e.kind,
+            at: new Date(e.at).toISOString(),
+            answer: String(e.answer ?? "").slice(0, 80),
+            ...(e.kind === "mastery" ? { mastered: e.mastered } : {}),
+          });
+        }
+        return {
+          baseline: cleanCloudStats(raw.baseline ?? {}),
+          pending,
+          accountId: typeof raw.accountId === "string" ? raw.accountId.slice(0, 80) : null,
+        };
+      }
+
+      const CLOUD_CONFIG = JSON.parse($("cloudConfig").textContent);
+      const CLOUD_AUTH_KEY = STORAGE_KEY + "-cloud-auth";
+      const CLOUD_OUTBOX_PREFIX = STORAGE_KEY + "-event-";
+      const cloud = {
+        session: null,
+        busy: false,
+        timer: null,
+        refreshPromise: null,
+        generation: 0,
+        configured: /^https:\/\/[^/]+\/?$/.test(CLOUD_CONFIG.url || "") && !!CLOUD_CONFIG.publishableKey,
+      };
+      function cloudMessage(text) {
+        $("cloudMessage").textContent = text;
+      }
+      function renderCloudAccount() {
+        $("cloudLogin").hidden = !!cloud.session || !cloud.configured;
+        $("cloudAccount").hidden = !cloud.session;
+        $("cloudEmailLabel").textContent = cloud.session ? "已登录：" + (cloud.session.user.email || "") : "";
+        if (!cloud.configured) cloudMessage("云同步尚待启用，当前练习仍自动保存在本机。");
+        $("cloudToggle").textContent = cloud.session
+          ? state.sync.pending.length
+            ? "待同步 " + state.sync.pending.length
+            : "云同步已登录"
+          : "云同步";
+      }
+      function openCloudPanel(open) {
+        $("cloudPanel").hidden = !open;
+        $("cloudToggle").setAttribute("aria-expanded", String(open));
+        if (open) {
+          renderCloudAccount();
+          if (!cloud.session && cloud.configured) $("cloudEmail").focus();
+        }
+      }
+      function recordCloudEvent(word, kind, answer = "", mastered) {
+        state.sync ??= validateSyncState(null, {});
+        const lastTime = Date.parse(state.sync.pending.at(-1)?.at) || 0;
+        const event = { id: crypto.randomUUID(), word, kind, answer, at: new Date(Math.max(Date.now(), lastTime + 1)).toISOString() };
+        if (kind === "mastery") event.mastered = !!mastered;
+        // Separate localStorage entries prevent another open tab from overwriting an
+        // offline answer when both tabs save their own cached application state.
+        try {
+          localStorage.setItem(CLOUD_OUTBOX_PREFIX + event.id, JSON.stringify({ event, accountId: state.sync.accountId }));
+        } catch {
+          $("storageWarning").hidden = false;
+        }
+        state.sync.pending.push(event);
+        scheduleCloudSync();
+      }
+      function collectCloudOutbox() {
+        const pending = new Map(state.sync.pending.map((e) => [e.id, e]));
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key?.startsWith(CLOUD_OUTBOX_PREFIX)) continue;
+            const saved = JSON.parse(localStorage.getItem(key));
+            if (saved.accountId && saved.accountId !== state.sync.accountId) continue;
+            const valid = validateSyncState({ baseline: {}, pending: [saved.event] }, {});
+            pending.set(saved.event.id, valid.pending[0]);
+          }
+        } catch {
+          cloudMessage("部分本机待同步记录未能读取，请先导出学习备份。");
+        }
+        state.sync.pending = Array.from(pending.values());
+      }
+      function scheduleCloudSync() {
+        if (!cloud.configured || !cloud.session) return;
+        clearTimeout(cloud.timer);
+        $("cloudToggle").textContent = "待同步 " + state.sync.pending.length;
+        cloud.timer = setTimeout(() => {
+          void syncCloud();
+        }, 900);
+      }
+      async function cloudRequest(path, body, token) {
+        const controller = new AbortController(),
+          timeout = setTimeout(() => controller.abort(), 15000);
+        try {
+          const headers = { apikey: CLOUD_CONFIG.publishableKey, "Content-Type": "application/json" };
+          if (token) headers.Authorization = "Bearer " + token;
+          const response = await fetch(CLOUD_CONFIG.url.replace(/\/$/, "") + path, {
+            method: body === undefined ? "GET" : "POST",
+            headers,
+            ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+            signal: controller.signal,
+            referrerPolicy: "no-referrer",
+          });
+          let result;
+          try {
+            result = await response.json();
+          } catch {
+            result = {};
+          }
+          if (!response.ok) {
+            const error = new Error(
+              response.status === 401
+                ? "登录已过期，请重新登录。"
+                : response.status === 429
+                  ? "发送或同步过于频繁，请稍后再试。"
+                  : path.includes("/rpc/")
+                    ? "云端尚未就绪或暂时不可用，练习记录已保存在本机。"
+                    : "登录请求未成功，请检查邮箱、验证码及项目邮件设置。"
+            );
+            error.status = response.status;
+            error.requiresLogin = response.status === 401 || (response.status === 400 && path.includes("/auth/v1/token"));
+            throw error;
+          }
+          return result;
+        } catch (error) {
+          if (error.name === "AbortError" || error instanceof TypeError) throw new Error("暂时无法连接云端，练习记录已保存在本机，联网后会重试。");
+          throw error;
+        } finally {
+          clearTimeout(timeout);
+        }
+      }
+      function storeCloudSession(session) {
+        cloud.session = { ...session, expires_at: session.expires_at || Math.floor(Date.now() / 1000) + (session.expires_in || 3600) };
+        localStorage.setItem(CLOUD_AUTH_KEY, JSON.stringify(cloud.session));
+        renderCloudAccount();
+      }
+      async function cloudAccessToken() {
+        const session = cloud.session;
+        if (!session) throw new Error("请先登录云同步。");
+        if (session.expires_at > Date.now() / 1000 + 60) return session.access_token;
+        if (!cloud.refreshPromise) {
+          const generation = cloud.generation;
+          cloud.refreshPromise = cloudRequest("/auth/v1/token?grant_type=refresh_token", { refresh_token: session.refresh_token })
+            .then((updated) => {
+              if (cloud.generation !== generation) throw new Error("登录状态已改变，请重新同步。");
+              storeCloudSession(updated);
+              return updated.access_token;
+            })
+            .finally(() => {
+              cloud.refreshPromise = null;
+            });
+        }
+        return cloud.refreshPromise;
+      }
+      async function acceptCloudSession(session) {
+        if (!session.access_token || !session.refresh_token) throw new Error("登录信息无效，请重新登录。");
+        const user = await cloudRequest("/auth/v1/user", undefined, session.access_token);
+        if (state.sync.accountId && state.sync.accountId !== user.id) throw new Error("本机进度已关联另一个账号，请使用原来的邮箱登录。");
+        state.sync.accountId = user.id;
+        storeCloudSession({ ...session, user });
+        save();
+        $("cloudCodeForm").hidden = true;
+        cloudMessage("登录成功，正在合并本机与云端进度。");
+        await syncCloud();
+      }
+      function applyPendingCloudEvents(stats, pending) {
+        // Only events not covered by the server response are replayed locally.
+        const activity = {},
+          mastery = {};
+        for (const [word, s] of Object.entries(stats)) {
+          activity[word] = Date.parse(s.lastAt) || 0;
+          mastery[word] = Date.parse(s.masteryAt || s.lastAt) || 0;
+        }
+        for (const e of pending.slice().sort((a, b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id))) {
+          const s = (stats[e.word] ??= { attempts: 0, correct: 0, errors: 0, mastered: false, lastAnswer: "", lastAt: "" });
+          const time = Date.parse(e.at);
+          if (e.kind === "mastery") {
+            if (time >= (mastery[e.word] || 0)) {
+              s.mastered = e.mastered;
+              mastery[e.word] = time;
+            }
+          } else {
+            s.attempts++;
+            if (e.kind === "correct") s.correct++;
+            else {
+              s.errors++;
+              if (time >= (mastery[e.word] || 0)) {
+                s.mastered = false;
+                mastery[e.word] = time;
+              }
+            }
+            if (time >= (activity[e.word] || 0)) {
+              s.lastAnswer = e.answer;
+              s.lastAt = e.at;
+              activity[e.word] = time;
+            }
+          }
+        }
+        return stats;
+      }
+      async function syncCloud() {
+        if (!cloud.configured || !cloud.session || cloud.busy) return;
+        if (!navigator.onLine) {
+          cloudMessage("当前离线，联网后自动同步。");
+          $("cloudToggle").textContent = "离线 · 本地保存";
+          return;
+        }
+        if (state.sync.accountId && state.sync.accountId !== cloud.session.user.id) {
+          cloudMessage("当前账号与本机进度不一致，请使用原账号登录。");
+          return;
+        }
+        collectCloudOutbox();
+        cloud.busy = true;
+        $("cloudNow").disabled = true;
+        $("cloudToggle").textContent = "正在同步…";
+        const snapshot = state,
+          syncState = state.sync,
+          generation = cloud.generation;
+        const sent = syncState.pending.slice(0, 500),
+          sentIds = new Set(sent.map((e) => e.id));
+        const baseline = JSON.parse(JSON.stringify(syncState.baseline));
+        let uploaded = false;
+        try {
+          const token = await cloudAccessToken();
+          const response = await cloudRequest("/rest/v1/rpc/sync_toefl_progress", { p_baseline: baseline, p_events: sent }, token);
+          const merged = cleanCloudStats(response);
+          if (generation !== cloud.generation || state !== snapshot || state.sync !== syncState) return;
+          syncState.pending = syncState.pending.filter((e) => !sentIds.has(e.id));
+          for (const id of sentIds)
+            try {
+              localStorage.removeItem(CLOUD_OUTBOX_PREFIX + id);
+            } catch {}
+          syncState.baseline = {};
+          syncState.accountId = cloud.session.user.id;
+          state.stats = applyPendingCloudEvents(merged, syncState.pending);
+          uploaded = true;
+          save();
+          refreshStats();
+          // Keep the current answer inputs intact while background updates arrive.
+          if (view === "memory") renderMemory();
+          else if (view === "home") renderHome();
+          else if (view === "results") renderResults();
+          const time = new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit" }).format(new Date());
+          cloudMessage("已同步 · " + time + " · " + Object.values(state.stats).filter((s) => s.attempts > 0).length + " 个已练单词");
+          $("cloudToggle").textContent = syncState.pending.length ? "待同步 " + syncState.pending.length : "云端已同步";
+        } catch (error) {
+          cloudMessage(error.message);
+          $("cloudToggle").textContent = "本地已存 · 待同步";
+          if (error.requiresLogin) {
+            cloud.session = null;
+            localStorage.removeItem(CLOUD_AUTH_KEY);
+            renderCloudAccount();
+            cloudMessage("登录已过期，请重新登录。本机练习记录已保留。");
+          }
+        } finally {
+          cloud.busy = false;
+          $("cloudNow").disabled = false;
+          if (cloud.session && navigator.onLine && (state !== snapshot || (uploaded && state.sync.pending.length))) scheduleCloudSync();
+        }
+      }
+      $("cloudToggle").onclick = () => openCloudPanel($("cloudPanel").hidden);
+      $("cloudClose").onclick = () => openCloudPanel(false);
+      $("cloudNow").onclick = () => {
+        void syncCloud();
+      };
+      $("cloudEmailForm").onsubmit = async (e) => {
+        e.preventDefault();
+        if (!cloud.configured) return;
+        if (location.protocol !== "https:" && location.hostname !== "localhost") {
+          cloudMessage("请在正式的 HTTPS 网站上登录云同步。");
+          return;
+        }
+        $("cloudSend").disabled = true;
+        try {
+          await cloudRequest("/auth/v1/otp?redirect_to=" + encodeURIComponent(location.origin + location.pathname), {
+            email: $("cloudEmail").value.trim(),
+            create_user: true,
+          });
+          $("cloudCodeForm").hidden = !!CLOUD_CONFIG.magicLinkOnly;
+          cloudMessage(
+            CLOUD_CONFIG.magicLinkOnly
+              ? "登录邮件已发送。请在当前使用的浏览器中打开邮件里的登录链接，完成后自动同步。"
+              : "登录邮件已发送。点击邮件中的登录链接；邮件含验证码时，也可在下方输入。"
+          );
+          if (!CLOUD_CONFIG.magicLinkOnly) $("cloudCode").focus();
+        } catch (error) {
+          cloudMessage(error.message);
+        } finally {
+          $("cloudSend").disabled = false;
+        }
+      };
+      $("cloudCodeForm").onsubmit = async (e) => {
+        e.preventDefault();
+        $("cloudVerify").disabled = true;
+        try {
+          await acceptCloudSession(
+            await cloudRequest("/auth/v1/verify", { email: $("cloudEmail").value.trim(), token: $("cloudCode").value.trim(), type: "email" })
+          );
+        } catch (error) {
+          cloudMessage(error.message);
+        } finally {
+          $("cloudVerify").disabled = false;
+        }
+      };
+      $("cloudLogout").onclick = async () => {
+        const session = cloud.session;
+        cloud.generation++;
+        cloud.session = null;
+        clearTimeout(cloud.timer);
+        localStorage.removeItem(CLOUD_AUTH_KEY);
+        renderCloudAccount();
+        cloudMessage("已退出云同步，本机练习记录保留。");
+        if (session)
+          try {
+            await cloudRequest("/auth/v1/logout?scope=local", {}, session.access_token);
+          } catch {}
+      };
+      async function startCloudSync() {
+        renderCloudAccount();
+        if (!cloud.configured) return;
+        try {
+          const hash = new URLSearchParams(location.hash.slice(1));
+          if (hash.has("access_token")) {
+            const session = {
+              access_token: hash.get("access_token"),
+              refresh_token: hash.get("refresh_token"),
+              expires_in: Number(hash.get("expires_in")) || 3600,
+            };
+            history.replaceState(null, "", location.pathname + location.search);
+            openCloudPanel(true);
+            await acceptCloudSession(session);
+            return;
+          }
+          const saved = JSON.parse(localStorage.getItem(CLOUD_AUTH_KEY) || "null");
+          if (saved?.access_token && saved?.refresh_token && saved?.user?.id) {
+            if (state.sync.accountId && state.sync.accountId !== saved.user.id) throw new Error("本机进度关联的账号不同，请使用原邮箱登录。");
+            cloud.session = saved;
+            renderCloudAccount();
+            await syncCloud();
+          }
+        } catch (error) {
+          cloudMessage(error.message);
+        }
+      }
+      window.addEventListener("online", () => {
+        void syncCloud();
+      });
+      window.addEventListener("focus", () => {
+        void syncCloud();
+      });
+      window.addEventListener("storage", (e) => {
+        if (e.key?.startsWith(CLOUD_OUTBOX_PREFIX) && e.newValue) scheduleCloudSync();
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) void syncCloud();
+      });
+      setInterval(() => {
+        if (!document.hidden) void syncCloud();
+      }, 20000);
+      queueMicrotask(() => {
+        void startCloudSync();
+      });
+
       refreshStats();
       if (state.round) show(state.round.done ? "results" : "quiz");
       else show("home");
