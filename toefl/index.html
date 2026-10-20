@@ -420,7 +420,7 @@
       }
       .sentence {
         padding: 32px 38px 28px;
-        font: clamp(23px, 2.1vw, 29px)/2 var(--serif);
+        font: clamp(23px, 2.1vw, 29px) / 2 var(--serif);
         color: #233c48;
         text-wrap: pretty;
         overflow-wrap: break-word;
@@ -14286,12 +14286,16 @@
           .map((c) => {
             if (!/[a-z]/i.test(c)) return '<span aria-hidden="true">' + esc(c) + "</span>";
             const n = i++;
-            return `<input class="letter" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="缺失部分第 ${n + 1} 个字母" data-slot="${n}" placeholder="_" value="${esc(values[n] || "")}" ${a ? "disabled" : ""}>`;
+            return `<input class="letter" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="缺失部分第 ${
+              n + 1
+            } 个字母" data-slot="${n}" placeholder="_" value="${esc(values[n] || "")}" ${a ? "disabled" : ""}>`;
           })
           .join("");
         $("sentence").innerHTML =
           esc(q.before) +
-          `<span class="word-gap ${a ? (a.status === "correct" ? "right" : "wrong") : ""}" role="group" aria-label="单词补全，已给出 ${esc(prefix)}，缺少 ${size} 个字母"><span class="prefix">${esc(prefix)}</span>${gap}</span>` +
+          `<span class="word-gap ${a ? (a.status === "correct" ? "right" : "wrong") : ""}" role="group" aria-label="单词补全，已给出 ${esc(
+            prefix
+          )}，缺少 ${size} 个字母"><span class="prefix">${esc(prefix)}</span>${gap}</span>` +
           esc(q.after);
         $("feedback").hidden = !a;
         $("submitButton").hidden = !!a;
@@ -14307,8 +14311,11 @@
             a.status === "correct"
               ? `原表填空频次 ${q.frequency} · 本次正确`
               : `你的答案：${a.status === "skipped" ? "未作答（查看答案）" : a.typed} · 累计错次 ${state.stats[q.id]?.errors || 0}`;
-          $("feedback").innerHTML =
-            `<div class="verdict">${label}</div><div class="answer-row"><strong class="answer-word" lang="en">${esc(q.word)}</strong><span class="meaning">${esc(q.meaning)}</span></div><p class="full-sentence" lang="en">${esc(q.before)}<mark>${esc(q.displayedWord)}</mark>${esc(q.after)}</p><p class="detail">${esc(detail)}</p>`;
+          $("feedback").innerHTML = `<div class="verdict">${label}</div><div class="answer-row"><strong class="answer-word" lang="en">${esc(
+            q.word
+          )}</strong><span class="meaning">${esc(q.meaning)}</span></div><p class="full-sentence" lang="en">${esc(q.before)}<mark>${esc(
+            q.displayedWord
+          )}</mark>${esc(q.after)}</p><p class="detail">${esc(detail)}</p>`;
           $("nextButton").focus({ preventScroll: true });
         } else focusSlot(r.draft.findIndex((c) => !c) < 0 ? Math.min(r.draft.length, size - 1) : r.draft.findIndex((c) => !c));
       }
@@ -14422,7 +14429,15 @@
         const s = state.stats[q.id],
           answer = mode === "round" ? state.round.answers[q.id] : null;
         const last = answer ? (answer.status === "skipped" ? "（查看答案）" : answer.typed) : s.lastAnswer;
-        return `<article class="word-card"><div><div class="word-title"><strong lang="en">${esc(q.word)}</strong><span>累计错 ${s.errors} 次</span></div><p class="word-meaning">${esc(q.meaning)}</p><p class="word-extra">${mode === "round" ? "本轮答案" : "最近答案"}：${esc(last)}${s.mastered ? " · 已标记掌握" : ""}</p></div><div><button class="small" type="button" data-master="${esc(q.id)}">${s.mastered ? "重新记忆" : "标记已掌握"}</button></div><details><summary>查看完整例句</summary><p class="word-example" lang="en">${esc(q.before + q.displayedWord + q.after)}</p></details></article>`;
+        return `<article class="word-card"><div><div class="word-title"><strong lang="en">${esc(q.word)}</strong><span>累计错 ${
+          s.errors
+        } 次</span></div><p class="word-meaning">${esc(q.meaning)}</p><p class="word-extra">${mode === "round" ? "本轮答案" : "最近答案"}：${esc(
+          last
+        )}${s.mastered ? " · 已标记掌握" : ""}</p></div><div><button class="small" type="button" data-master="${esc(q.id)}">${
+          s.mastered ? "重新记忆" : "标记已掌握"
+        }</button></div><details><summary>查看完整例句</summary><p class="word-example" lang="en">${esc(
+          q.before + q.displayedWord + q.after
+        )}</p></details></article>`;
       }
       function renderResults() {
         const r = state.round;
@@ -14433,8 +14448,27 @@
         const attempted = Object.keys(r.answers).length,
           correct = Object.values(r.answers).filter((a) => a.status === "correct").length,
           wrong = roundWrong();
-        $("resultsView").innerHTML =
-          `<div class="intro"><div class="eyebrow">Practice review</div><h1>${attempted === r.ids.length ? "本轮练习完成" : "本轮练习已结束"}</h1><p>本轮已提交 ${attempted} / ${r.ids.length} 题。答错和查看答案的单词已自动收录至重点记忆。</p></div><div class="summary-grid"><div class="summary-stat"><strong>${attempted}</strong><span>已答题数</span></div><div class="summary-stat"><strong>${correct}</strong><span>答对</span></div><div class="summary-stat"><strong>${wrong.length}</strong><span>本轮待记忆</span></div><div class="summary-stat"><strong>${attempted ? Math.round((correct / attempted) * 100) + "%" : "—"}</strong><span>本轮正确率</span></div></div><div class="results-actions"><button class="primary" type="button" id="retryRound" ${wrong.length ? "" : "disabled"}>重练本轮错词</button><button type="button" id="newRound">开始新一轮</button><button type="button" id="viewAllMemory">查看重点记忆</button><button type="button" id="exportRound" ${wrong.length ? "" : "disabled"}>导出本轮错词</button></div><div class="results-heading"><h2>本轮重点记忆</h2><span>${wrong.length} 个单词 · 附中文释义</span></div><div class="word-list">${wrong.length ? wrong.map((q) => listCard(q, "round")).join("") : `<div class="empty"><h3>${attempted ? "本轮没有错词" : "本轮尚未作答"}</h3><p>${attempted ? "可以开始新一轮，继续练习其他单词。" : "开始新一轮后，提交答案即可生成统计。"}</p></div>`}</div>`;
+        $("resultsView").innerHTML = `<div class="intro"><div class="eyebrow">Practice review</div><h1>${
+          attempted === r.ids.length ? "本轮练习完成" : "本轮练习已结束"
+        }</h1><p>本轮已提交 ${attempted} / ${
+          r.ids.length
+        } 题。答错和查看答案的单词已自动收录至重点记忆。</p></div><div class="summary-grid"><div class="summary-stat"><strong>${attempted}</strong><span>已答题数</span></div><div class="summary-stat"><strong>${correct}</strong><span>答对</span></div><div class="summary-stat"><strong>${
+          wrong.length
+        }</strong><span>本轮待记忆</span></div><div class="summary-stat"><strong>${
+          attempted ? Math.round((correct / attempted) * 100) + "%" : "—"
+        }</strong><span>本轮正确率</span></div></div><div class="results-actions"><button class="primary" type="button" id="retryRound" ${
+          wrong.length ? "" : "disabled"
+        }>重练本轮错词</button><button type="button" id="newRound">开始新一轮</button><button type="button" id="viewAllMemory">查看重点记忆</button><button type="button" id="exportRound" ${
+          wrong.length ? "" : "disabled"
+        }>导出本轮错词</button></div><div class="results-heading"><h2>本轮重点记忆</h2><span>${
+          wrong.length
+        } 个单词 · 附中文释义</span></div><div class="word-list">${
+          wrong.length
+            ? wrong.map((q) => listCard(q, "round")).join("")
+            : `<div class="empty"><h3>${attempted ? "本轮没有错词" : "本轮尚未作答"}</h3><p>${
+                attempted ? "可以开始新一轮，继续练习其他单词。" : "开始新一轮后，提交答案即可生成统计。"
+              }</p></div>`
+        }</div>`;
         $("retryRound").onclick = () => startRound(wrong, "本轮错词重练");
         $("newRound").onclick = () => show("home");
         $("viewAllMemory").onclick = () => show("memory");
@@ -14455,7 +14489,15 @@
         $("exportMemory").disabled = !allWrong().length;
         $("memoryList").innerHTML = words.length
           ? words.map((q) => listCard(q)).join("")
-          : `<div class="empty"><h3>${search ? "没有找到匹配的单词" : filter === "mastered" ? "暂无已掌握单词" : filter === "active" && allWrong().length ? "待记忆词已全部标记掌握" : "这里会收集你的错词"}</h3><p>${search ? "试试其他单词或中文关键词。" : "练习中答错或查看答案后，单词和中文释义会显示在这里。"}</p></div>`;
+          : `<div class="empty"><h3>${
+              search
+                ? "没有找到匹配的单词"
+                : filter === "mastered"
+                  ? "暂无已掌握单词"
+                  : filter === "active" && allWrong().length
+                    ? "待记忆词已全部标记掌握"
+                    : "这里会收集你的错词"
+            }</h3><p>${search ? "试试其他单词或中文关键词。" : "练习中答错或查看答案后，单词和中文释义会显示在这里。"}</p></div>`;
       }
       document.addEventListener("click", (e) => {
         const button = e.target.closest("[data-master]");
