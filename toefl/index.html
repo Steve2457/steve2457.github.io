@@ -812,211 +812,9 @@
           gap: 10px;
         }
       }
-      @media (max-width: 700px) {
-        .shell {
-          display: block;
-        }
-        .sidebar {
-          position: static;
-          width: 100%;
-          height: auto;
-          padding: 17px 20px;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          border-right: 0;
-          border-bottom: 1px solid var(--line);
-        }
-        .brandmark {
-          width: 31px;
-          height: 31px;
-          font-size: 22px;
-        }
-        .brandname {
-          font-size: 19px;
-        }
-        .brandcaption,
-        .side-info,
-        .side-foot {
-          display: none;
-        }
-        .nav {
-          display: flex;
-          gap: 4px;
-        }
-        .nav button {
-          padding: 8px 10px;
-          font-size: 12px;
-          gap: 7px;
-        }
-        .main {
-          padding: 20px 17px 35px;
-        }
-        .topbar {
-          margin-bottom: 28px;
-          font-size: 10px;
-        }
-        .topbar .date-label {
-          display: none;
-        }
-        h1 {
-          font-size: 27px;
-        }
-        .intro p {
-          font-size: 13px;
-        }
-        .panel {
-          padding: 23px 20px;
-        }
-        .fields {
-          gap: 17px 12px;
-        }
-        .quiz-head h1 {
-          font-size: 23px;
-        }
-        .sentence {
-          padding: 25px 21px;
-          font-size: 24px;
-          line-height: 2.05;
-        }
-        .question-meta {
-          padding: 20px 21px 0;
-        }
-        .quiz-controls {
-          padding: 18px 21px;
-        }
-        .control-buttons {
-          gap: 7px;
-        }
-        .control-buttons button {
-          padding: 9px 13px;
-          font-size: 13px;
-        }
-        .quiz-controls .subnote {
-          font-size: 10px;
-        }
-        .feedback {
-          padding: 23px 21px;
-        }
-        .quiz-foot {
-          font-size: 10px;
-          flex-wrap: wrap;
-        }
-        .input-error {
-          padding: 0 21px 15px;
-        }
-        .word-card {
-          padding: 18px;
-          gap: 10px;
-        }
-        .word-card .small {
-          font-size: 11px;
-          padding: 7px 9px;
-        }
-        .word-title strong {
-          font-size: 22px;
-        }
-        .summary-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .summary-stat {
-          padding: 17px 20px;
-        }
-        .section-head h1 {
-          font-size: 25px;
-        }
-        .tools button {
-          font-size: 12px;
-          padding: 8px 12px;
-        }
-        .resume {
-          padding: 15px;
-        }
-        .resume .primary {
-          white-space: nowrap;
-          font-size: 12px;
-        }
-        .quiz-head {
-          gap: 8px;
-        }
-        .quiz-head .quiet {
-          font-size: 12px;
-        }
-        .answer-row {
-          gap: 8px 14px;
-        }
-        .meaning {
-          font-size: 14px;
-        }
-        .meta-note {
-          font-size: 11px;
-        }
-        .letter {
-          width: 0.94em;
-          min-width: 0.94em;
-          margin: 0;
-        }
-        .word-gap {
-          gap: 1px;
-          margin: 0 2px;
-        }
-        footer {
-          font-size: 10px;
-        }
-      }
       @media (prefers-reduced-motion: reduce) {
         * {
           transition: none !important;
-        }
-      }
-      @media (max-width: 700px) {
-        .sidebar {
-          padding: 17px 16px;
-          gap: 8px;
-        }
-        .brand {
-          gap: 8px;
-        }
-        .brandmark {
-          width: 28px;
-          height: 28px;
-        }
-        .brandname {
-          font-size: 17px;
-        }
-        .nav button {
-          white-space: nowrap;
-          padding: 8px 7px;
-          gap: 5px;
-        }
-        #bankCount {
-          display: none;
-        }
-      }
-      @media (max-width: 700px) {
-        .sidebar {
-          flex-wrap: wrap;
-          align-items: flex-start;
-        }
-        .brand {
-          padding-top: 7px;
-        }
-        .nav {
-          flex: 1;
-          min-width: 190px;
-          align-items: flex-start;
-          justify-content: flex-end;
-        }
-        .practice-nav {
-          min-width: 100px;
-        }
-        .vocab-progress {
-          padding: 1px 7px 3px;
-        }
-        .vocab-progress-meta {
-          font-size: 10px;
-          gap: 4px;
         }
       }
       @media print {
@@ -1102,6 +900,516 @@
       }
       .cloud-panel label {
         font-size: 13px;
+      }
+      .mobile-copy {
+        display: none;
+      }
+      /* Mobile layout: a quiet header, one clear task, and comfortable touch targets. */
+      @media (max-width: 700px) {
+        .shell {
+          display: block;
+          position: relative;
+          min-height: 100svh;
+        }
+        button,
+        .small,
+        .tools button {
+          min-height: 44px;
+        }
+        input,
+        select,
+        .field select,
+        .search,
+        .toolbar select {
+          font-size: 16px;
+        }
+        .sidebar {
+          position: static;
+          width: 100%;
+          height: auto;
+          padding: 12px 18px 16px;
+          gap: 14px;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+          background: #eaf1f3;
+        }
+        .brand {
+          min-height: 44px;
+          gap: 9px;
+          padding-right: 145px;
+        }
+        .brandmark {
+          flex-shrink: 0;
+          width: 30px;
+          height: 30px;
+          font-size: 23px;
+        }
+        .brandname {
+          font-size: 19px;
+        }
+        .brandcaption,
+        .side-info,
+        .side-foot {
+          display: none;
+        }
+        .nav {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          gap: 10px;
+          align-items: start;
+        }
+        .nav button {
+          justify-content: center;
+          gap: 9px;
+          padding: 10px 12px;
+          font-size: 14px;
+          border-radius: 9px;
+        }
+        .nav button.active {
+          background: var(--teal);
+          color: #fff;
+          box-shadow: none;
+        }
+        #bankCount {
+          display: none;
+        }
+        .count {
+          font-size: 11px;
+          min-width: 22px;
+        }
+        .vocab-progress {
+          padding: 0 10px;
+        }
+        .vocab-progress-meta {
+          margin: 7px 0 6px;
+          font-size: 11px;
+        }
+        .vocab-progress-track {
+          height: 4px;
+        }
+        .main {
+          padding: 24px 18px calc(32px + env(safe-area-inset-bottom, 0px));
+        }
+        .topbar {
+          position: absolute;
+          top: 12px;
+          right: 18px;
+          margin: 0;
+          max-width: 145px;
+        }
+        .topbar > span,
+        .topbar .dot,
+        #saveStatus {
+          display: none;
+        }
+        .topbar .status {
+          gap: 0;
+        }
+        .cloud-entry {
+          padding: 9px 12px;
+          font-size: 12px;
+          border-radius: 22px;
+          background: #f8fbfc;
+        }
+        h1 {
+          font-size: 27px;
+          line-height: 1.4;
+        }
+        h2 {
+          font-size: 20px;
+        }
+        .eyebrow {
+          font-size: 10px;
+          letter-spacing: 1.5px;
+        }
+        .intro {
+          margin-bottom: 24px;
+        }
+        .intro .eyebrow {
+          margin-bottom: 9px;
+        }
+        .intro p {
+          font-size: 14px;
+          line-height: 1.8;
+          margin-top: 10px;
+        }
+        .panel {
+          padding: 22px 20px;
+          border-radius: 15px;
+        }
+        .panel-heading {
+          gap: 8px;
+          margin-bottom: 22px;
+        }
+        .tag {
+          font-size: 11px;
+          padding: 4px 7px;
+        }
+        .fields {
+          gap: 18px 14px;
+        }
+        .field {
+          min-width: 0;
+          gap: 8px;
+        }
+        .field label {
+          font-size: 13px;
+        }
+        .field select,
+        .search,
+        .toolbar select {
+          min-height: 48px;
+          border-radius: 9px;
+          padding: 10px 12px;
+        }
+        .start-row {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+          margin-top: 24px;
+        }
+        .start-row .primary {
+          min-height: 50px;
+          border-radius: 10px;
+        }
+        .start-row .subnote {
+          text-align: center;
+        }
+        .resume {
+          padding: 18px;
+          gap: 14px;
+          flex-wrap: wrap;
+          border-radius: 12px;
+          margin-bottom: 20px;
+        }
+        .resume > div {
+          flex: 1 1 160px;
+        }
+        .resume .primary {
+          flex: 1 0 100%;
+          min-height: 48px;
+        }
+        .meta-note {
+          margin-top: 20px;
+          font-size: 12px;
+          line-height: 1.8;
+        }
+
+        .quiz-head {
+          gap: 10px;
+          margin-bottom: 18px;
+          align-items: center;
+        }
+        .quiz-head .eyebrow {
+          display: none;
+        }
+        .quiz-head h1 {
+          font-size: 22px;
+          letter-spacing: -0.5px;
+        }
+        .quiz-head .quiet {
+          flex-shrink: 0;
+          font-size: 12px;
+          padding: 8px;
+        }
+        .desktop-copy {
+          display: none;
+        }
+        .mobile-copy {
+          display: inline;
+        }
+        .progress-meta {
+          flex-wrap: wrap;
+          gap: 4px 12px;
+          font-size: 11px;
+          margin-bottom: 9px;
+        }
+        .progress {
+          height: 4px;
+        }
+        .quiz-card {
+          margin-top: 20px;
+          border-radius: 15px;
+        }
+        .question-meta {
+          padding: 20px 20px 0;
+          font-size: 11px;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .question-label {
+          letter-spacing: 1px;
+        }
+        .sentence {
+          padding: 24px 20px 26px;
+          font-size: 24px;
+          line-height: 1.85;
+        }
+        .word-gap {
+          gap: 1px;
+          margin: 0;
+          font-size: clamp(16px, 4.65vw, 20px);
+          max-width: 100%;
+        }
+        .word-gap .prefix {
+          letter-spacing: 0.4px;
+        }
+        .letter {
+          width: 1em;
+          min-width: 1em;
+          height: 44px;
+          margin: 0;
+          border-radius: 4px 4px 0 0;
+        }
+        .quiz-controls {
+          padding: 16px 20px;
+          display: block;
+        }
+        .control-buttons {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 10px;
+        }
+        .control-buttons button {
+          width: 100%;
+          min-height: 48px;
+          padding: 11px 12px;
+          font-size: 15px;
+          border-radius: 9px;
+        }
+        #skipButton {
+          background: transparent;
+          border-color: transparent;
+          color: var(--muted);
+          font-size: 13px;
+        }
+        .quiz-controls > .subnote {
+          display: none;
+        }
+        .quiz-foot {
+          display: block;
+          margin-top: 14px;
+          font-size: 11px;
+          line-height: 1.8;
+          text-align: center;
+        }
+        .quiz-foot > span {
+          display: block;
+        }
+        .input-error {
+          padding: 0 20px 18px;
+          font-size: 13px;
+        }
+        .feedback {
+          padding: 22px 20px;
+        }
+        .feedback .verdict {
+          line-height: 1.7;
+          font-size: 13px;
+        }
+        .answer-row {
+          display: block;
+        }
+        .answer-word {
+          display: block;
+          font-size: 28px;
+          overflow-wrap: anywhere;
+        }
+        .meaning {
+          display: block;
+          margin-top: 5px;
+          font-size: 14px;
+          line-height: 1.8;
+        }
+        .full-sentence {
+          font-size: 18px;
+          line-height: 1.8;
+        }
+        .feedback .detail {
+          overflow-wrap: anywhere;
+          line-height: 1.8;
+        }
+
+        .section-head {
+          display: block;
+          margin-bottom: 20px;
+        }
+        .section-head h1 {
+          font-size: 26px;
+          margin-top: 7px;
+        }
+        .section-head p {
+          font-size: 13px;
+          line-height: 1.8;
+        }
+        .section-head > .tools {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        .tools button {
+          font-size: 13px;
+          padding: 10px;
+        }
+        .toolbar {
+          gap: 12px;
+          align-items: stretch;
+          margin-bottom: 16px;
+        }
+        .search {
+          max-width: none;
+        }
+        .toolbar > .tools {
+          width: 100%;
+          justify-content: space-between;
+        }
+        .toolbar select {
+          flex: 1;
+          max-width: 220px;
+        }
+        .word-list {
+          gap: 16px;
+        }
+        .word-card {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          padding: 20px;
+          border-radius: 13px;
+        }
+        .word-title {
+          gap: 6px 12px;
+        }
+        .word-title strong {
+          font-size: 26px;
+          overflow-wrap: anywhere;
+        }
+        .word-meaning {
+          font-size: 14px;
+          line-height: 1.8;
+          margin-top: 8px;
+        }
+        .word-extra {
+          overflow-wrap: anywhere;
+          line-height: 1.8;
+        }
+        .word-card > div:nth-child(2) {
+          order: 3;
+        }
+        .word-card .small {
+          width: 100%;
+          font-size: 13px;
+          background: #f7fafb;
+        }
+        .word-card details {
+          border-top: 1px solid var(--line);
+          padding-top: 6px;
+        }
+        .word-card summary {
+          min-height: 44px;
+          align-content: center;
+          font-size: 13px;
+        }
+        .word-example {
+          font-size: 18px;
+          overflow-wrap: anywhere;
+        }
+        .meta-note.tools {
+          gap: 10px;
+          padding-top: 20px;
+          border-top: 1px solid var(--line);
+        }
+        .meta-note.tools button {
+          flex: 1;
+        }
+        .meta-note.tools > span {
+          flex-basis: 100%;
+        }
+        .summary-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+          margin: 22px 0;
+        }
+        .summary-stat {
+          padding: 17px 20px;
+          border-radius: 12px;
+        }
+        .summary-stat strong {
+          font-size: 30px;
+        }
+        .results-actions {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+        .results-actions button {
+          padding: 10px;
+          font-size: 13px;
+        }
+        .results-heading {
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .empty {
+          padding: 35px 20px;
+        }
+        .cloud-panel {
+          max-width: none;
+          padding: 20px;
+          border-radius: 15px;
+          margin-bottom: 24px;
+        }
+        .cloud-panel p {
+          line-height: 1.8;
+        }
+        .cloud-message:empty {
+          display: none;
+        }
+        .cloud-panel input {
+          min-height: 48px;
+          font-size: 16px;
+        }
+        .cloud-panel button.primary {
+          min-height: 48px;
+        }
+        #cloudEmailLabel {
+          overflow-wrap: anywhere;
+        }
+        .cloud-actions > button {
+          flex: 1;
+        }
+        footer {
+          display: block;
+          margin-top: 30px;
+          padding-top: 18px;
+          border-top: 1px solid var(--line);
+          font-size: 10px;
+          line-height: 1.9;
+        }
+        footer > span {
+          display: block;
+        }
+        .toast {
+          bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+          width: max-content;
+          max-width: calc(100vw - 36px);
+        }
+      }
+      @media (max-width: 420px) {
+        .fields {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .brandname {
+          font-size: 18px;
+        }
+        .sentence {
+          font-size: 23px;
+        }
+      }
+      @media (hover: none) and (pointer: coarse) {
+        .quiz-controls > .subnote {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -1277,7 +1585,9 @@
                 <div class="eyebrow">Sentence practice</div>
                 <h1>补全句子中的单词</h1>
               </div>
-              <button id="finishEarly" class="quiet" type="button">结束本轮并统计</button>
+              <button id="finishEarly" class="quiet" type="button">
+                <span class="desktop-copy">结束本轮并统计</span><span class="mobile-copy">结束本轮</span>
+              </button>
             </div>
             <div class="progress-meta"><span id="questionProgress"></span><span id="roundStats"></span></div>
             <div class="progress" role="progressbar" aria-label="本轮进度" aria-valuemin="0" id="progressBar"><span id="progressFill"></span></div>
