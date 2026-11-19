@@ -11,6 +11,8 @@ window.SITE_DATA = {
     avatarWebp480: "/assets/img/prof_pic-480.webp",
     avatarWebp800: "/assets/img/prof_pic-800.webp",
     avatarFallback: "/assets/img/prof_pic.jpg",
+    avatarWidth: 800,
+    avatarHeight: 600,
     contactNote: "",
     // 头像下方社交图标（顺序即展示顺序，url 留空则自动隐藏）
     socials: [
@@ -60,6 +62,8 @@ window.SITE_DATA = {
   interestingItems: [
     {
       icon: "/assets/img/interesting/arxiv.png",
+      iconWidth: 465,
+      iconHeight: 465,
       name: "Super arXiv",
       url: "https://github.com/Steve2457/Super-arXiv",
       description:
@@ -67,6 +71,8 @@ window.SITE_DATA = {
     },
     {
       icon: "/assets/img/interesting/openreveiw.png",
+      iconWidth: 120,
+      iconHeight: 120,
       name: "OpenReview Export",
       url: "https://github.com/Steve2457/Openreview-Export",
       description:
@@ -94,7 +100,7 @@ window.SITE_DATA = {
     },
     {
       date: "May, 2026",
-      content: `🚀 The Super arXiv <img src="/assets/img/interesting/arxiv.png" alt="arXiv" style="width:18px; vertical-align:middle;"> extension surpassed 600 users one month after launch. Thank you for the support!`,
+      content: `🚀 The Super arXiv <img class="inline-logo inline-logo-news" src="/assets/img/interesting/arxiv.png" alt="arXiv" width="18" height="18"> extension surpassed 600 users one month after launch. Thank you for the support!`,
     },
     {
       date: "Apr, 2026",
@@ -130,6 +136,8 @@ window.SITE_DATA = {
       year: 2026,
       abbr: "arXiv",
       preview: "/assets/img/publication_preview/video-coder.png",
+      previewWidth: 2008,
+      previewHeight: 608,
       selected: true,
       links: [
         { label: "arXiv", url: "https://arxiv.org/abs/2611.09894" },
@@ -156,6 +164,8 @@ window.SITE_DATA = {
       year: 2026,
       abbr: "TMLR",
       preview: "/assets/img/publication_preview/gui-survey.png",
+      previewWidth: 3610,
+      previewHeight: 2368,
       selected: true,
       links: [
         { label: "arXiv", url: "https://arxiv.org/abs/2604.27955" },
@@ -178,6 +188,8 @@ window.SITE_DATA = {
       year: 2026,
       abbr: "ACL",
       preview: "/assets/img/publication_preview/contex-agent.png",
+      previewWidth: 3766,
+      previewHeight: 1949,
       selected: true,
       links: [
         { label: "arXiv", url: "https://arxiv.org/abs/2604.05552" },
